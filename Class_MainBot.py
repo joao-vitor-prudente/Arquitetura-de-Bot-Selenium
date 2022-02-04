@@ -17,7 +17,6 @@ class MainBot(Bot):
         """ SET UP DO DRIVER E DA PASTA DOWNLOADS QUE SERÁ EXECUTADO QUANDO A CLASSE FOR CHAMADA NUM CONTEXT MANAGER.
         Func: return self.main(): função principal do bot.
         """
-        self.set_up_ambiente()
         self.set_up()
         print('entrando')
 
@@ -39,7 +38,6 @@ class MainBot(Bot):
         Str: param exc_traceback: traceback da excessão.
         """
         self.clean_up()
-        self.clean_up_ambiente()
 
         if exc_type is None:
             self.log = 'Interação executada com sucesso'
