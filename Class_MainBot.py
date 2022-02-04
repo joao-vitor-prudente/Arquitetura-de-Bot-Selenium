@@ -18,7 +18,6 @@ class MainBot(Bot):
         Func: return self.main(): função principal do bot.
         """
         self.set_up()
-        print('entrando')
 
     def main(self):
         """ SCRIPT PRINCIPAL DE INTERAÇÃO DO BOT COM O SITE.
