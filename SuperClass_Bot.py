@@ -1,6 +1,3 @@
-import json
-import shutil
-from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
@@ -21,7 +18,6 @@ class Bot:
     def __init__(self):
         """ CONSTRUTOR.
         """
-        self.user = Path.home().name
         self.driver = None
         self.parametros = {}
         self.log = ''
@@ -34,20 +30,6 @@ class Bot:
         caps['pageLoadStrategy'] = 'normal'
         # caps['pageLoadStrategy'] = 'eager'
 
-        chrome_options = webdriver.ChromeOptions()
-        settings = {
-            "recentDestinations": [{
-                "id": "Save as PDF",
-                "origin": "local",
-                "account": "",
-            }],
-            "selectedDestinationId": "Save as PDF",
-            "version": 2
-        }
-        prefs = {'printing.print_preview_sticky_settings.appState': json.dumps(settings)}
-        chrome_options.add_experimental_option('prefs', prefs)
-        chrome_options.add_argument('--kiosk-printing')
-
         self.driver = webdriver.Chrome(desired_capabilities=caps, options=chrome_options)
 
         self.driver.get(self.link)
@@ -56,34 +38,3 @@ class Bot:
         """ ENCERA O DRIVER.
         """
         self.driver.close()
-
-    def set_up_ambiente(self):
-        """ PADRONIZA O AMBIENTE DE TRABALHO DOS BOTS NOS DIRETORIOS DO COMPUTADOR (PASTA DOWNLOADS).
-        APENAS NECESSARIO CASO HAJA DOWNLOAD DE ARQUIVOS.
-        """
-        # lista os arquivos da pasta downloads
-        caminho_downloads = Path(rf'C:\Users\{self.user}\Downloads')
-        if caminho_downloads / Path('temp') in caminho_downloads.iterdir() or \
-                caminho_downloads / Path('downloads') in caminho_downloads.iterdir():
-            self.log = f'Apague ou mova qualquer pasta chamada temp ou downloads da sua pasta downloads.'
-            return
-
-        # cria as pastas temp e certidoes
-        arquivos = list(caminho_downloads.iterdir())
-        (caminho_downloads / Path('temp')).mkdir()
-        (caminho_downloads / Path('downloads')).mkdir()
-
-        # move todos os arquivos para a pasta temp
-        for arquivo in arquivos:
-            shutil.move(arquivo, arquivo.parent / Path('temp') / arquivo.name)
-
-    def clean_up_ambiente(self):
-        """ DESPADRONIZA O AMBIENTE DE TRABALHO DOS BOTS NOS DIRETORIOS DO COMPUTADOR (PASTA DOWNLOADS).
-        APENAS NECESSARIO CASO HAJA DOWNLOAD DE ARQUIVOS.
-        """
-        # esvaziar pasta temp
-        for arquivo in Path(fr'C:\Users\{self.user}\Downloads\temp').iterdir():
-            shutil.move(arquivo, arquivo.parent.parent / arquivo.name)
-
-        # apagar pasta temp
-        Path(fr'C:\Users\{self.user}\Downloads\temp').rmdir()
